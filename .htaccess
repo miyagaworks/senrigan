@@ -1,0 +1,87 @@
+# HTTPからHTTPSへの強制リダイレクト
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP_HOST} ^senrigan\.systems$ [NC]
+    RewriteRule ^(.*)$ https://senrigan.systems/$1 [L,R=301]
+</IfModule>
+
+# Default document settings
+DirectoryIndex index.html
+
+# Disable directory browsing
+Options -Indexes
+
+# Character set
+AddDefaultCharset UTF-8
+
+# Proper MIME type settings
+AddType application/javascript .js .mjs
+AddType text/javascript .js .mjs
+AddType text/css .css
+AddType image/svg+xml .svg
+AddType image/x-icon .ico
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # JavaScript files
+    <FilesMatch "\.(js|mjs)$">
+        Header set Content-Type "application/javascript"
+    </FilesMatch>
+    
+    # CSS files
+    <FilesMatch "\.css$">
+        Header set Content-Type "text/css"
+    </FilesMatch>
+    
+    # reCAPTCHA domains
+    Header set Content-Security-Policy "frame-src 'self' https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/; frame-ancestors 'self'; script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline';"
+</IfModule>
+
+# Cache Control
+<FilesMatch "\.(js|mjs|css|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+
+<FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
+# SPA routing
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # APIディレクトリのPHPファイルとHTMLファイルへのアクセスを許可
+    RewriteRule ^api/.*\.(php|html)$ - [L]
+    
+    # リソースファイルが実在する場合はそれを使用
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    
+    # JS/CSSファイルへのリクエストを適切に処理
+    RewriteRule ^(js|css|images)/.*\.(js|css|png|jpg|svg)$ - [L]
+    
+    # その他すべてのリクエストをindex.htmlにリダイレクト
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# Block access to sensitive files
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript text/javascript
+</IfModule>
+
+# Environment variables
+SetEnv RECAPTCHA_SECRET_KEY "6LeCboYrAAAAANIVQzxCyCMfdgsFlkk0kTFYNdph"

@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+    body {
+        @apply bg-gray-200;
+    }
+}
+
+@layer components {
+    .card-base {
+        @apply bg-white p-8 rounded-2xl shadow-md border border-gray-200 transition-all duration-300;
+    }
+    .card-base:hover {
+        @apply shadow-lg -translate-y-1;
+    }
+    .card-icon {
+        @apply w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-transform duration-500 bg-gray-100;
+    }
+    .card-icon:group-hover {
+        @apply scale-110;
+    }
+    .section-container {
+        @apply container mx-auto px-4;
+    }
+    .info-row {
+        @apply flex items-center p-4 rounded-lg transition-all duration-300 bg-gray-100;
+    }
+    .info-row:hover {
+        @apply bg-white;
+    }
+    .info-label {
+        @apply text-gray-600 font-medium min-w-[120px];
+    }
+    .info-value {
+        @apply text-gray-700 flex-1;
+    }
+    .philosophy-card {
+        @apply bg-white p-8 rounded-2xl shadow-md border border-gray-200 transition-all duration-300;
+    }
+    .philosophy-card:hover {
+        @apply shadow-lg -translate-y-1;
+    }
+    .philosophy-icon {
+        @apply w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center transition-transform duration-300;
+    }
+    .philosophy-icon:group-hover {
+        @apply scale-110;
+    }
+    .philosophy-title {
+        @apply text-xl font-bold text-gray-900 transition-colors flex items-center gap-2;
+    }
+    .philosophy-title:group-hover {
+        @apply text-blue-600;
+    }
+    .philosophy-description {
+        @apply text-gray-600 leading-relaxed text-lg;
+    }
+}
+
+.text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-gray-700 to-gray-900;
+}
+
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+
+.animate-spin-slow {
+    animation: orbit 20s linear infinite;
+}
+
+.animate-glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(8px);
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes wave {
+    0% {
+        background-position: 100% 0%;
+    }
+    100% {
+        background-position: -100% 0%;
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(0, -20px, 20px);
+    }
+}
+
+@keyframes glow {
+    0%,
+    100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.5);
+    }
+}
+
+@keyframes orbit {
+    0% {
+        transform: rotate3d(1, 1, 1, 0deg);
+    }
+    100% {
+        transform: rotate3d(1, 1, 1, 360deg);
+    }
+}
+
+@keyframes waveMove {
+    0% {
+        transform: translateX(-50%) scale(2);
+    }
+    100% {
+        transform: translateX(50%) scale(2);
+    }
+}

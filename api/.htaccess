@@ -1,0 +1,5 @@
+# APIディレクトリ用の.htaccess（テスト用）
+<IfModule mod_headers.c>
+    # テスト用に一時的にCSPを緩和
+    Header set Content-Security-Policy "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval';"
+</IfModule>
