@@ -24,6 +24,7 @@ ssh/
 
 # Config files with sensitive data
 api/config_with_key.php
+api/.htaccess
 
 # Editor directories and files
 .vscode/*
