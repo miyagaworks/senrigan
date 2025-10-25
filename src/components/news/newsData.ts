@@ -14,7 +14,7 @@ export const newsItems: NewsItem[] = [
     id: 8,
     category: "press",
     title: "ゴルフ上達アプリ「上手くなる気がするぅぅぅ」正式リリース",
-    date: "2025.10.25",
+    date: "2025-10-25",
     icon: LineChart,
     color: "green",
     excerpt:
