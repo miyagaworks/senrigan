@@ -30,7 +30,7 @@ jobs:
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 10022
           local_path: ./dist/*
           remote_path: ${{ secrets.FTP_SERVER_DIR }}
