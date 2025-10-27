@@ -15,6 +15,7 @@ const Careers: React.FC = () => {
     {
       icon: Code,
       title: 'エンジニア職',
+      value: 'engineer',
       description: 'フロントエンド、バックエンド、インフラなど、最新技術を活用した開発に携わります。',
       requirements: [
         'Web開発経験（実務2年以上）',
@@ -25,6 +26,7 @@ const Careers: React.FC = () => {
     {
       icon: Layout,
       title: 'デザイナー職',
+      value: 'designer',
       description: 'UI/UXデザインを中心に、ユーザー体験の向上に貢献します。',
       requirements: [
         'UIデザインの実務経験（2年以上）',
@@ -35,6 +37,7 @@ const Careers: React.FC = () => {
     {
       icon: LineChart,
       title: 'プロジェクトマネージャー',
+      value: 'pm',
       description: 'プロジェクトの進行管理、クライアントとの折衝を担当します。',
       requirements: [
         'IT業界でのPM経験（3年以上）',
@@ -130,15 +133,13 @@ const Careers: React.FC = () => {
                       ))}
                     </div>
                     <div className="mt-6">
-                      <a href="#contact" className="flex items-center gap-2 text-blue-600 font-medium hover:translate-x-2 transition-transform">
-                      <Link 
-                        to="/careers/apply"
+                      <Link
+                        to={`/careers/apply?position=${position.value}`}
                         className="inline-flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         応募する
                         <ArrowRight className="w-5 h-5" />
                       </Link>
-                      </a>
                     </div>
                   </div>
                 );

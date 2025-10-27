@@ -49,7 +49,8 @@ const Sitemap = () => {
       links: [
         { name: '会社概要', path: '/#company' },
         { name: 'ニュース', path: '/company/news' },
-        { name: '採用情報', path: '/careers' }
+        { name: '採用情報', path: '/careers' },
+        { name: '出版書籍', path: '/#books' }
       ]
     },
     {

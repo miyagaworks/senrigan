@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(0);
+ini_set('log_errors', 1);
+
 require_once 'config_with_key.php';
 
 header('Content-Type: application/json');
@@ -55,14 +59,17 @@ try {
         $uploadedFiles['coverLetter'] = handleFileUpload($_FILES['coverLetter'], $uploadDir);
     }
 
-    // メール送信処理
-    $to = 'recruit@senrigan.systems';
-    $subject = '採用エントリー受付';
-    $emailContent = createEmailMessage($_POST, $uploadedFiles);
-    
-    if (!mail($to, $subject, $emailContent['message'], $emailContent['headers'])) {
+    // 1. 管理者宛メール送信
+    $adminTo = 'recruit@senrigan.systems';
+    $adminSubject = '採用エントリー受付 - ' . date('Y-m-d H:i:s');
+    $adminEmailContent = createAdminEmailMessage($_POST, $uploadedFiles);
+
+    if (!mail($adminTo, $adminSubject, $adminEmailContent['message'], $adminEmailContent['headers'])) {
         throw new Exception('メール送信に失敗しました');
     }
+
+    // 2. 応募者宛確認メール送信
+    $applicantMailResult = sendApplicantConfirmationEmail($_POST);
 
     // アップロードされたファイルの削除
     foreach ($uploadedFiles as $file) {
@@ -71,7 +78,22 @@ try {
         }
     }
 
-    echo json_encode(['success' => true, 'message' => '応募を受け付けました']);
+    // 応募者への確認メール送信結果に応じてメッセージを変更
+    if ($applicantMailResult) {
+        $message = '応募を受け付けました。確認メールをお送りしましたので、受信トレイまたは迷惑メールフォルダをご確認ください。選考の結果は追ってご連絡いたします。';
+    } else {
+        $message = '応募を受け付けました。確認メールの送信でエラーが発生いたしました。選考の結果は追ってご連絡いたします。';
+    }
+
+    echo json_encode([
+        'success' => true,
+        'message' => $message,
+        'debug' => [
+            'admin_mail' => true,
+            'applicant_mail' => $applicantMailResult,
+            'timestamp' => date('Y-m-d H:i:s')
+        ]
+    ]);
 
 } catch (Exception $e) {
     error_log("Apply form error: " . $e->getMessage());
@@ -97,7 +119,7 @@ function handleFileUpload($file, $uploadDir) {
     throw new Exception('ファイルアップロードに失敗しました');
 }
 
-function createEmailMessage($post, $files) {
+function createAdminEmailMessage($post, $files) {
     $boundary = md5(uniqid(rand(), true));
 
     $headers = "From: {$post['email']}\r\n";
@@ -141,7 +163,68 @@ function translatePosition($position) {
         'designer' => 'デザイナー職',
         'pm' => 'プロジェクトマネージャー'
     ];
-    
+
     return $positions[$position] ?? $position;
+}
+
+/**
+ * 応募者宛確認メール送信
+ */
+function sendApplicantConfirmationEmail($data) {
+    $to = $data['email'];
+    $subject = '【Senrigan】採用エントリー受付のご確認';
+
+    $headers = "From: 株式会社Senrigan <recruit@senrigan.systems>\r\n";
+    $headers .= "Reply-To: recruit@senrigan.systems\r\n";
+    $headers .= "Return-Path: recruit@senrigan.systems\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= "Content-Transfer-Encoding: 8bit\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+    $headers .= "X-Priority: 3\r\n";
+    $headers .= "Message-ID: <" . md5(uniqid() . $to) . "@senrigan.systems>\r\n";
+
+    $message = "{$data['name']} 様\n\n";
+    $message .= "株式会社Senriganです。\n";
+    $message .= "この度は採用エントリーをいただき、誠にありがとうございます。\n\n";
+
+    $message .= "以下の内容で応募を承りました：\n";
+    $message .= "■ 受付日時: " . date('Y年n月j日 G:i') . "\n";
+    $message .= "■ お名前: {$data['name']}\n";
+    $message .= "■ フリガナ: {$data['nameKana']}\n";
+    $message .= "■ メールアドレス: {$data['email']}\n";
+    $message .= "■ 電話番号: {$data['phone']}\n";
+    $message .= "■ 希望職種: " . translatePosition($data['position']) . "\n\n";
+
+    if (!empty($data['message'])) {
+        $message .= "■ 自己PR・志望動機:\n";
+        $message .= $data['message'] . "\n\n";
+    }
+
+    $message .= "書類選考の結果は1週間以内にご連絡いたします。\n";
+    $message .= "選考に関するお問い合わせは recruit@senrigan.systems までご連絡ください。\n\n";
+
+    $message .= "※このメールは自動送信です。返信はできません。\n";
+    $message .= "※迷惑メールフォルダに入る場合があります。\n\n";
+
+    $message .= "──────────────────────────\n";
+    $message .= "株式会社Senrigan 採用担当\n";
+    $message .= "〒731-0137 広島県広島市安佐南区山本2-3-35\n";
+    $message .= "TEL: 082-209-0181\n";
+    $message .= "E-mail: recruit@senrigan.systems\n";
+    $message .= "WEB: https://senrigan.systems\n";
+    $message .= "「千の想いを、ひとつのカタチに。」\n";
+    $message .= "──────────────────────────\n";
+
+    error_log("応募確認メール送信試行 - 宛先: {$to}");
+    error_log("応募確認メール件名: {$subject}");
+
+    try {
+        $result = mail($to, $subject, $message, $headers);
+        error_log("応募確認メール送信結果: " . ($result ? '成功' : '失敗'));
+        return $result;
+    } catch (Exception $e) {
+        error_log("応募確認メール送信エラー: " . $e->getMessage());
+        return false;
+    }
 }
 ?>

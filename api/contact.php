@@ -1,7 +1,7 @@
 <?php
 // api/contact.php - Gmail配信最適化版
-ini_set('display_errors', 0);
-error_reporting(0);
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 ini_set('log_errors', 1);
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -173,7 +173,7 @@ function sendCustomerMailOptimized($data) {
     $message .= "〒731-0137 広島県広島市安佐南区山本2-3-35\n";
     $message .= "TEL: 082-209-0181\n";
     $message .= "WEB: https://senrigan.systems\n";
-    $message .= "「ビジネスにプラスαを」\n";
+    $message .= "「千の想いを、ひとつのカタチに。」\n";
     $message .= "──────────────────────────\n";
 
     error_log("確認メール送信試行（最適化版） - 宛先: {$to}");
@@ -205,7 +205,7 @@ function getCompanySignature() {
     $signature .= "WEB: https://senrigan.systems\n";
     $signature .= "E-mail: contact@senrigan.systems\n";
     $signature .= "\n";
-    $signature .= "「ビジネスにプラスαを」\n";
+    $signature .= "「千の想いを、ひとつのカタチに。」\n";
     $signature .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
     
     return $signature;

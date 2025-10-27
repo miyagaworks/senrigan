@@ -6,7 +6,7 @@ export const Books = () => {
   const otherBooks = books.filter(book => !book.isFeatured);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section id="books" className="py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -54,11 +54,16 @@ export const Books = () => {
                   <span className="inline-block bg-blue-600 text-white text-sm font-semibold px-4 py-1 rounded-full mb-4 w-fit">
                     おすすめ
                   </span>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                    {featuredBook.title}
+                  <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+                    アミダス<ruby>人<rt className="text-base">ひと</rt></ruby>
                   </h3>
+                  {featuredBook.subtitle && (
+                    <p className="text-lg md:text-2xl text-justify font-bold text-gray-600 mb-4">
+                      {featuredBook.subtitle}
+                    </p>
+                  )}
                   {featuredBook.description && (
-                    <p className="text-gray-700 mb-6 whitespace-pre-line leading-relaxed">
+                    <p className="text-gray-700 mb-6 whitespace-pre-line leading-relaxed text-justify">
                       {featuredBook.description}
                     </p>
                   )}
@@ -120,8 +125,15 @@ export const Books = () => {
                     />
                   </div>
                   <div className="p-3">
-                    <h4 className="text-sm font-bold text-gray-900 mb-1 line-clamp-2 min-h-[2.5rem]">
-                      {book.title}
+                    <h4 className="text-sm font-bold text-gray-900 mb-1 line-clamp-3 min-h-[3rem]">
+                      {book.title === "アミダス人" ? (
+                        <>
+                          アミダス<ruby>人<rt className="text-[0.5rem]">ひと</rt></ruby>
+                          {book.subtitle && <span className="block text-xs text-gray-600 font-bold mt-0.5">{book.subtitle}</span>}
+                        </>
+                      ) : (
+                        book.title
+                      )}
                     </h4>
                     <p className="text-xs text-gray-500 mb-1">
                       {new Date(book.publishDate).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short' })}

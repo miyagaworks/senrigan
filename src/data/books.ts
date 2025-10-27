@@ -1,6 +1,7 @@
 export interface Book {
   asin: string;
   title: string;
+  subtitle?: string;
   publishDate: string;
   price: number;
   isFeatured?: boolean;
@@ -11,11 +12,12 @@ export interface Book {
 export const books: Book[] = [
   {
     asin: "B0FXFHGW37",
-    title: "アミダス人（ひと）ーそれはプラモデルからはじまった",
+    title: "アミダス人",
+    subtitle: "それはプラモデルからはじまった",
     publishDate: "2025-10-23",
     price: 99,
     isFeatured: true, // おすすめ書籍
-    description: "田舎のプラモデル少年が40歳で独立。\n貯金ゼロから這い上がった「編み出す力」の正体。\n\n読み終わった後に、もう一つの扉が開く🔓",
+    description: "田舎のプラモデル少年が40歳で独立。\n貯金ゼロから這い上がった「編み出す力」の正体。\n\n読み終わった後にもう一つの扉が開く🔓",
     imageUrl: "https://m.media-amazon.com/images/I/81UO8ZJKY8L._SL1500_.jpg",
   },
   {

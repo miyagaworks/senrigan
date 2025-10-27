@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Upload, Briefcase, User, Send, Loader2, ArrowLeft } from 'lucide-react';
 
@@ -21,6 +21,9 @@ interface FormErrors {
 }
 
 const ApplicationForm: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const positionParam = searchParams.get('position') || '';
+
   // スクロール制御
   useEffect(() => {
     window.scrollTo({
@@ -34,7 +37,7 @@ const ApplicationForm: React.FC = () => {
     nameKana: '',
     email: '',
     phone: '',
-    position: '',
+    position: positionParam,
     resume: null,
     coverLetter: null,
     message: ''

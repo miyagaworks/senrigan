@@ -26,6 +26,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isScrolled, isOpen, onToggle })
 
   const renderMenuItem = (item: MenuItem) => {
     const isExpanded = expandedItems.includes(item.href);
+    const Icon = item.icon;
 
     return (
       <div key={item.href} className="border-b border-gray-200 last:border-0">
@@ -37,9 +38,10 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isScrolled, isOpen, onToggle })
                 handleNavigation(e, item.href, isTopPage, onToggle);
               }
             }}
-            className="flex-grow py-3 text-gray-900 hover:text-blue-600 transition-colors"
+            className="flex items-center gap-3 flex-grow py-3 text-gray-900 hover:text-blue-600 transition-colors"
           >
-            {item.label}
+            {Icon && <Icon size={20} className="flex-shrink-0" />}
+            <span>{item.label}</span>
           </a>
           {item.children && (
             <button
@@ -52,20 +54,31 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isScrolled, isOpen, onToggle })
         </div>
         {item.children && isExpanded && (
           <div className="pl-4 pb-2 space-y-2">
-            {item.children.map(child => (
-              <a
-                key={child.href}
-                href={`/${child.href}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = `/${child.href}`;
-                  onToggle();
-                }}
-                className="block py-2 text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                {child.label}
-              </a>
-            ))}
+            {item.children.map(child => {
+              const isHashLink = child.href === 'books';
+              const href = isHashLink ? (isTopPage ? `#${child.href}` : `/#${child.href}`) : `/${child.href}`;
+              const ChildIcon = child.icon;
+
+              return (
+                <a
+                  key={child.href}
+                  href={href}
+                  onClick={(e) => {
+                    if (isHashLink) {
+                      handleNavigation(e, child.href, isTopPage, onToggle);
+                    } else {
+                      e.preventDefault();
+                      window.location.href = `/${child.href}`;
+                      onToggle();
+                    }
+                  }}
+                  className="flex items-center gap-3 py-2 text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  {ChildIcon && <ChildIcon size={18} className="flex-shrink-0" />}
+                  <span>{child.label}</span>
+                </a>
+              );
+            })}
           </div>
         )}
       </div>
@@ -83,7 +96,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isScrolled, isOpen, onToggle })
       </button>
 
       {isOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-sm shadow-lg">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-sm shadow-lg max-h-[calc(100vh-80px)] overflow-y-auto">
           <nav className="container mx-auto px-4 py-2 divide-y divide-gray-100">
             {menuItems.map(renderMenuItem)}
           </nav>

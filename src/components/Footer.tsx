@@ -19,6 +19,7 @@ const Footer: React.FC = () => {
     { name: "会社概要", href: "company", isAnchor: true },
     { name: "採用情報", href: "/careers", isAnchor: false },
     { name: "ニュース", href: "news", isAnchor: true },
+    { name: "出版書籍", href: "books", isAnchor: true },
   ];
 
   const policies = [
